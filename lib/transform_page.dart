@@ -18,11 +18,50 @@ class _TransformPageState extends State<TransformPage> {
 
   double wheelchairWidth = 40;
 
+  void turn() {}
+
   void move({required double left, required double right}) {
+    double direction = 0;
+
+    if ((left > 0 && right < 0) || (left < 0 && right > 0)) {
+      double rotateDiff = 0;
+      if (left > right) {
+        if (left > right.abs()) {
+          rotateDiff = right.abs();
+        } else {
+          rotateDiff = left;
+        }
+
+        left -= rotateDiff;
+        right += rotateDiff;
+        direction = 1;
+      } else {
+        if (right > left) {
+          if (right > left.abs()) {
+            rotateDiff = left.abs();
+          } else {
+            rotateDiff = right;
+          }
+        }
+
+        right -= rotateDiff;
+        left += rotateDiff;
+        direction = -1;
+      }
+
+      double rotationTheta =
+          (rotateDiff * 360) / (2 * pi * wheelchairWidth) * direction;
+      this.theta += rotationTheta;
+      setState(() {
+        rotate += rotationTheta;
+      });
+    }
+
     double diff = left - right;
     diff = diff.abs();
+
     double remain = left > right ? left - diff : right - diff;
-    double direction = left > right ? 1 : -1;
+    direction = left > right ? 1 : -1;
 
     double positive = 1;
 
@@ -86,14 +125,17 @@ class _TransformPageState extends State<TransformPage> {
   }
 
   void straight(double diff, double direction) async {
+    if (diff == 0) return;
+    diff = diff.abs();
+
     double offsetX =
         cos((90 - theta) * (pi / 180)) * (wheelchairWidth / 2 + diff);
     double offsetY =
         sin((90 - theta) * (pi / 180)) * (wheelchairWidth / 2 + diff);
 
     setState(() {
-      positionX += (offsetX);
-      positionY -= (offsetY);
+      positionX += (offsetX * direction);
+      positionY -= (offsetY * direction);
     });
   }
 
@@ -232,56 +274,116 @@ class _TransformPageState extends State<TransformPage> {
               height: 200,
               child: Column(
                 children: [
+                  Text("Rotate = ${rotate.toStringAsFixed(3)}"),
+                  TextButton(
+                      onPressed: () async {
+                        move(left: 3, right: 2);
+                        await Future.delayed(Duration(milliseconds: 150));
+                        move(left: 3, right: 3);
+                        await Future.delayed(Duration(milliseconds: 150));
+                        move(left: 3, right: 3);
+                        await Future.delayed(Duration(milliseconds: 150));
+                        move(left: 3, right: 3);
+                        await Future.delayed(Duration(milliseconds: 150));
+                        move(left: 3, right: 3);
+                        await Future.delayed(Duration(milliseconds: 150));
+                        move(left: 3, right: 3);
+                        await Future.delayed(Duration(milliseconds: 150));
+                        move(left: 3, right: 3);
+                        await Future.delayed(Duration(milliseconds: 150));
+                        move(left: 3, right: 3);
+                        await Future.delayed(Duration(milliseconds: 150));
+                        move(left: 3, right: 3);
+                        await Future.delayed(Duration(milliseconds: 150));
+                        move(left: 3, right: 3);
+                        await Future.delayed(Duration(milliseconds: 150));
+                        move(left: -3, right: 3);
+                        await Future.delayed(Duration(milliseconds: 150));
+                        move(left: -3, right: 3);
+                        await Future.delayed(Duration(milliseconds: 150));
+                        move(left: -3, right: 3);
+                        await Future.delayed(Duration(milliseconds: 150));
+                        move(left: -3, right: 3);
+                        await Future.delayed(Duration(milliseconds: 150));
+                        move(left: -3, right: 3);
+                        await Future.delayed(Duration(milliseconds: 150));
+                        move(left: -3, right: 3);
+                        await Future.delayed(Duration(milliseconds: 150));
+                        move(left: -3, right: 3);
+                        await Future.delayed(Duration(milliseconds: 150));
+                        move(left: -3, right: 3);
+                        await Future.delayed(Duration(milliseconds: 150));
+                        move(left: -3, right: 3);
+                        await Future.delayed(Duration(milliseconds: 150));
+                        move(left: -3, right: 3);
+                        await Future.delayed(Duration(milliseconds: 150));
+                        move(left: -3, right: 3);
+                        await Future.delayed(Duration(milliseconds: 150));
+                        move(left: -3, right: 3);
+                        await Future.delayed(Duration(milliseconds: 150));
+                        move(left: 2, right: 0);
+                        await Future.delayed(Duration(milliseconds: 150));
+                        move(left: 2, right: 0);
+                        await Future.delayed(Duration(milliseconds: 150));
+                        move(left: 2, right: 0);
+                        await Future.delayed(Duration(milliseconds: 150));
+                        move(left: 2, right: 0);
+                        await Future.delayed(Duration(milliseconds: 150));
+                        move(left: 2, right: 0);
+                        await Future.delayed(Duration(milliseconds: 150));
+                        move(left: 2, right: 0);
+                        await Future.delayed(Duration(milliseconds: 150));
+                        move(left: 2, right: 0);
+                        await Future.delayed(Duration(milliseconds: 150));
+                        move(left: 2, right: 0);
+                        await Future.delayed(Duration(milliseconds: 150));
+                        move(left: 2, right: 0);
+                        await Future.delayed(Duration(milliseconds: 150));
+                        move(left: 2, right: 0);
+                      },
+                      child: Text("Dance! ")),
                   Row(
                     children: [
-                      Text("Rotate = ${rotate.toStringAsFixed(3)}"),
-                      // Slider(
-                      //     value: rotate,
-                      //     label: "Rotate",
-                      //     min: 0.0,
-                      //     max: 2 * pi,
-                      //     onChanged: (value) {
-                      //       setState(() {
-                      //         rotate = value;
-                      //       });
-                      //     }),
+                      TextButton(
+                          onPressed: () async {
+                            move(left: 15, right: -15);
+                          },
+                          child: Text("우회전(제자리) ")),
+                      TextButton(
+                          onPressed: () async {
+                            move(left: 15, right: 0);
+                          },
+                          child: Text("우회전")),
                     ],
                   ),
-                  TextButton(
-                      onPressed: () async {
-                        move(left: 15, right: 10);
-                        // rotateTheta(45);
-                        // await Future.delayed(Duration(milliseconds: 500));
-                        // straight(20);
-                      },
-                      child: Text("Turn left")),
-                  TextButton(
-                      onPressed: () async {
-                        rotateTheta(-45);
-                        await Future.delayed(Duration(milliseconds: 500));
-                        // straight(20);
-                      },
-                      child: Text("Turn Right")),
-                  // Slider(
-                  //     value: positionX,
-                  //     label: "PositionX $positionX",
-                  //     min: 0.0,
-                  //     max: 300.0,
-                  //     onChanged: (value) {
-                  //       setState(() {
-                  //         positionX = value;
-                  //       });
-                  //     }),
-                  // Slider(
-                  //     value: positionY,
-                  //     label: "PositionY $positionY",
-                  //     min: 0.0,
-                  //     max: 300.0,
-                  //     onChanged: (value) {
-                  //       setState(() {
-                  //         positionY = value;
-                  //       });
-                  //     }),
+                  Row(
+                    children: [
+                      TextButton(
+                          onPressed: () async {
+                            move(left: -15, right: 15);
+                          },
+                          child: Text("좌회전(제자리) ")),
+                      TextButton(
+                          onPressed: () async {
+                            move(left: 0, right: 15);
+                          },
+                          child: Text("좌회전")),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      TextButton(
+                          onPressed: () async {
+                            move(left: 15, right: 15);
+                          },
+                          child: Text("전진")),
+                      TextButton(
+                          onPressed: () async {
+                            move(left: -15, right: -15);
+                          },
+                          child: Text("후진")),
+                    ],
+                  ),
                 ],
               ),
             )
